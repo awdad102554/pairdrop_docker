@@ -5,27 +5,37 @@ services:
     container_name: pairdrop
     restart: unless-stopped
     volumes:
-      - ./rtc_config.json:/home/node/app/rtc_config.json
+      - ./rtc_config.json:/home/node/app/rtc_config.json:ro
     environment:
-      - PUID=1000 # UID to run the application as
-      - PGID=1000 # GID to run the application as
-      - WS_FALLBACK=false # Set to true to enable websocket fallback if the peer to peer WebRTC connection is not available to the client.
-      - RATE_LIMIT=false # Set to true to limit clients to 1000 requests per 5 min.
-      - RTC_CONFIG=/home/node/app/rtc_config.json # Set to the path of a file that specifies the STUN/TURN servers.
-      - DEBUG_MODE=false # Set to true to debug container and peer connections.
-      - TZ=Etc/UTC # Time Zone
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Shanghai
+      # 关键：必须开启，跨网段 P2P 失败时走 WebSocket 中继
+      - WS_FALLBACK=true
+      # 可选：尝试所有可用 IP 连接
+      - WS_FALLBACK_ALL_IPS=true  
+      - RATE_LIMIT=false
+      - RTC_CONFIG=/home/node/app/rtc_config.json
+      - DEBUG_MODE=false  # 联调失败时改为 true 看日志
     ports:
-      - "127.0.0.1:3000:3000" # Web UI. Change the port number before the last colon e.g. `127.0.0.1:9000:3000`
+      # 关键：改为 0.0.0.0 监听两个网卡，端口 3210
+      - "0.0.0.0:3210:3000"
+    # 如果不需要端口映射层，也可用 host 模式（性能稍好）：
+    # network_mode: host
+
   coturn_server:
-    image: "coturn/coturn"
+    image: "coturn/coturn:latest"
+    container_name: coturn
     restart: unless-stopped
+    # 关键：host 模式让 Coturn 监听 192.168.123.16 和 10.99.144.29
+    network_mode: host
     volumes:
-      - ./turnserver.conf:/etc/coturn/turnserver.conf
-      - ./ssl/:/etc/coturn/ssl/
+      - ./turnserver.conf:/etc/coturn/turnserver.conf:ro
+      - ./ssl/:/etc/coturn/ssl/:ro
+    # host 模式下端口映射无效，但保留可防止误解
     ports:
       - "3478:3478"
       - "3478:3478/udp"
       - "5349:5349"
       - "5349:5349/udp"
       - "10000-20000:10000-20000/udp"
-    # see guide at docs/host-your-own.md#coturn-and-pairdrop-via-docker-compose

@@ -1,0 +1,31 @@
+{
+  "sdpSemantics": "unified-plan",
+  "iceServers": [
+    {
+      "urls": "stun:stun.l.google.com:19302"
+    },
+    {
+      "urls": "stun:stun1.l.google.com:19302"
+    },
+    {
+      "urls": "turn:192.168.123.16:3478",
+      "username": "pairdrop",
+      "credential": "pairdrop"
+    },
+    {
+      "urls": "turn:10.99.144.29:3478",
+      "username": "pairdrop",
+      "credential": "pairdrop"
+    },
+    {
+      "urls": "turns:192.168.123.16:5349",
+      "username": "pairdrop",
+      "credential": "pairdrop"
+    },
+    {
+      "urls": "turns:10.99.144.29:5349",
+      "username": "pairdrop",
+      "credential": "pairdrop"
+    }
+  ]
+}
