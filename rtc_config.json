@@ -13,12 +13,22 @@
       "credential": "pairdrop"
     },
     {
+      "urls": "turn:192.168.8.16:3478",
+      "username": "pairdrop",
+      "credential": "pairdrop"
+    },
+    {
       "urls": "turn:10.99.144.29:3478",
       "username": "pairdrop",
       "credential": "pairdrop"
     },
     {
       "urls": "turns:192.168.123.16:5349",
+      "username": "pairdrop",
+      "credential": "pairdrop"
+    },
+    {
+      "urls": "turns:192.168.8.16:5349",
       "username": "pairdrop",
       "credential": "pairdrop"
     },
